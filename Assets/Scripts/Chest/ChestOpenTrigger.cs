@@ -25,18 +25,6 @@ public class ChestOpenTrigger : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.GetComponent<ChestOpener>())
-            _hasOpener = true;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.GetComponent<ChestOpener>())
-            _hasOpener = false;
-    }
-
     private void Update()
     {
         if (_isOpened)

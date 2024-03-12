@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Spawner : ObjectPool
@@ -9,8 +10,8 @@ public class Spawner : ObjectPool
 
     private float _timeBetweenSpawnCoin = 2f;
     private Transform[] _points;
-    private List<int> _occupiedPositions = new List<int>();
-    private List<int> _freeSpawnPoints = new List<int>();
+
+    private List<Transform> _freeSpawnPoints = new List<Transform>();
 
     private void Start()
     {
@@ -35,18 +36,14 @@ public class Spawner : ObjectPool
     {
         while (true)
         {
-            _freeSpawnPoints = GetFreeSpawnPoints();
+            List<Transform> occupiedPoints = GetObjectPosition().Select(obj => obj.transform).ToList();
+            List<Transform> freeSpawnPoints = _points.ToList().Except(occupiedPoints).ToList();
 
             if (TryGetObject(out GameObject coin))
             {
-                if (_freeSpawnPoints.Count > 0)
-                {
-                    int spawnPointNumber = Random.Range(0, _freeSpawnPoints.Count);
-                    int selectedSpawnPointIndex = _freeSpawnPoints[spawnPointNumber];
-                    SetCoin(coin, _points[selectedSpawnPointIndex].position);
-                    _occupiedPositions.Add(selectedSpawnPointIndex);
-                    _freeSpawnPoints.RemoveAt(spawnPointNumber);
-                }
+                int randomIndex = Random.Range(0, freeSpawnPoints.Count);
+                Transform spawnPoint = freeSpawnPoints[randomIndex];
+                SetCoin(coin, spawnPoint.position);
             }
 
             yield return new WaitForSeconds(_timeBetweenSpawnCoin);
@@ -57,20 +54,5 @@ public class Spawner : ObjectPool
     {
         coin.SetActive(true);
         coin.transform.position = spawnPoint;
-    }
-
-    private List<int> GetFreeSpawnPoints()
-    {
-        List<int> freeSpawnPoints = new List<int>();
-
-        for (int i = 0; i < _spawnPoints.childCount; i++)
-        {
-            if (!_occupiedPositions.Contains(i))
-            {
-                freeSpawnPoints.Add(i);
-            }
-        }
-
-        return freeSpawnPoints;
     }
 }

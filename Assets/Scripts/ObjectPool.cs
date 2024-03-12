@@ -25,4 +25,9 @@ public class ObjectPool : MonoBehaviour
 
         return result != null;
     }
+
+    protected List<GameObject> GetObjectPosition()
+    {
+        return _pool.Where(obj => obj.activeSelf == true).ToList();
+    }
 }

@@ -3,23 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Animator))]
+
 public class Player : MonoBehaviour
 {
     [SerializeField] private int _health = 10;
 
-    public int Money { get; private set; }
+    private int _currentHealth;
+    private Animator _animator;
 
-    public UnityAction<int> _MoneyView;
+    public Transform CurrentPosition => transform;
+
+    public UnityAction<int,int> HealthChange;
 
     private void Start()
     {
-        _MoneyView?.Invoke(Money);
+        _animator = GetComponent<Animator>();
+        _currentHealth = _health;
+        HealthChange?.Invoke(_health, _currentHealth);
     }
 
-    public void AddMoney(int coin)
+    public void AddDamage(int damage)
     {
-        Money += coin;
+        _currentHealth -= damage;
 
-        _MoneyView?.Invoke(Money);
+        //if (_currentHealth <= 0)
+            //Died();
+
+
     }
+
+    //private void Died()
+    //{
+    //    //анимация смерти
+    //    _animator.SetBool()
+
+    //        //пауза игры
+    //}
 }
