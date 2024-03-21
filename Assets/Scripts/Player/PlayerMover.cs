@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 
 public class PlayerMover : MonoBehaviour
 {
@@ -12,12 +13,12 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private float _speedMove = 7f;
     [SerializeField] private Transform _groundCheckPoint;
-    [SerializeField] private Animator _animator;
     [SerializeField] private int _damage = 2;
 
     private float _groundCheckRadius = 0.2f;
     private bool _isGrounded;
     private Rigidbody2D _rigidbody;
+    private Animator _animator;
     private LayerMask _groundLayer;
 
     public int Damage { get; private set; }
@@ -61,14 +62,7 @@ public class PlayerMover : MonoBehaviour
 
     private void Flip(float moveInput)
     {
-        if (moveInput > 0)
-        {
-            transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
-        else if (moveInput < 0)
-        {
-            transform.localScale = Vector3.one;
-        }
+        transform.localScale = moveInput > 0 ? new Vector2(-1f, 1f) : Vector2.one;
     }
 
     private void Attack()

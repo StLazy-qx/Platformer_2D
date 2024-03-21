@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ChestOpenTrigger : MonoBehaviour
@@ -11,7 +9,7 @@ public class ChestOpenTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<ChestOpener>())
+        if (collision.TryGetComponent(out ChestOpener chestOpener))
         {
             _hasOpener = true;
         }
@@ -19,7 +17,7 @@ public class ChestOpenTrigger : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<ChestOpener>())
+        if (collision.TryGetComponent(out ChestOpener chestOpener))
         {
             _hasOpener = false;
         }

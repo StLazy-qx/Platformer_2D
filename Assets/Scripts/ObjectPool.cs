@@ -1,10 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    [SerializeField] private GameObject _container;
+    [SerializeField] protected Transform Container;
     [SerializeField] protected int Capacity;
 
     private List<GameObject> _pool = new List<GameObject>();
@@ -13,7 +14,7 @@ public class ObjectPool : MonoBehaviour
     {
         for (int i = 0; i < Capacity; i++)
         {
-            GameObject spawned = Instantiate(prefab, _container.transform);
+            GameObject spawned = Instantiate(prefab, Container.transform);
             spawned.SetActive(false);
             _pool.Add(spawned);
         }
@@ -24,10 +25,5 @@ public class ObjectPool : MonoBehaviour
         result = _pool.FirstOrDefault(number => number.activeSelf == false);
 
         return result != null;
-    }
-
-    protected List<GameObject> GetObjectPosition()
-    {
-        return _pool.Where(obj => obj.activeSelf == true).ToList();
     }
 }
