@@ -1,43 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(CharacterGlobalCollisionHandler))]
+[RequireComponent(typeof(Wallet))]
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private int _health = 10;
-
-    private int _currentHealth;
-    private Animator _animator;
+    private CharacterGlobalCollisionHandler _collisionHandler;
+    private Wallet _wallet;
 
     public Transform CurrentPosition => transform;
 
-    public UnityAction<int,int> HealthChange;
-
     private void Start()
     {
-        _animator = GetComponent<Animator>();
-        _currentHealth = _health;
-        HealthChange?.Invoke(_health, _currentHealth);
+        _collisionHandler = GetComponent<CharacterGlobalCollisionHandler>();
+        _wallet = GetComponent<Wallet>();
+        _collisionHandler.OnCoinCollisionEnter += CoinCollisionHandler;
     }
 
-    public void AddDamage(int damage)
+    public void CoinCollisionHandler(Coin coin)
     {
-        _currentHealth -= damage;
-
-        //if (_currentHealth <= 0)
-            //Died();
-
-
+        _wallet.AddMoney(coin.Reward);
     }
-
-    //private void Died()
-    //{
-    //    //анимация смерти
-    //    _animator.SetBool()
-
-    //        //пауза игры
-    //}
 }

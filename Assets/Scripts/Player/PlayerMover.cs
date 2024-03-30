@@ -21,21 +21,18 @@ public class PlayerMover : MonoBehaviour
     private Animator _animator;
     private LayerMask _groundLayer;
 
-    public int Damage { get; private set; }
-
     private void Start()
     {
-
         _rigidbody = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _groundLayer = LayerMask.GetMask(Ground);
-        Damage = _damage;
     }
 
     private void Update()
     {
         _isGrounded = Physics2D.OverlapCircle(_groundCheckPoint.position, _groundCheckRadius, _groundLayer);
         float moveInput = Input.GetAxis(Horizontal);
+        float moveDirection = moveInput != 0 ? Mathf.Sign(moveInput) : 0;
 
         if (_isGrounded)
         {
@@ -43,8 +40,8 @@ public class PlayerMover : MonoBehaviour
                 Jump();
 
             Move(moveInput);
-            Flip(moveInput);
             Attack();
+            Flip(moveDirection);
         }
     }
 
@@ -53,16 +50,19 @@ public class PlayerMover : MonoBehaviour
         _rigidbody.velocity = new Vector2(_rigidbody.velocity.y, _jumpForce);
     }
 
-    private void Move(float moveInput)
+    private void Move(float value)
     {
-        _rigidbody.velocity = new Vector2(moveInput * _speedMove, _rigidbody.velocity.y);
+        _rigidbody.velocity = new Vector2(value * _speedMove, _rigidbody.velocity.y);
 
-        _animator.SetFloat(AnimationMove, Mathf.Abs(moveInput));
+        _animator.SetFloat(AnimationMove, Mathf.Abs(value));
     }
 
-    private void Flip(float moveInput)
+    private void Flip(float value)
     {
-        transform.localScale = moveInput > 0 ? new Vector2(-1f, 1f) : Vector2.one;
+        if (value != 0)
+        {
+            transform.rotation = value > 0 ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
+        }
     }
 
     private void Attack()

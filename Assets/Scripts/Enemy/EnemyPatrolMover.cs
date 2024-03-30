@@ -1,13 +1,17 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
+
 public class EnemyPatrolMover : MonoBehaviour
 {
+    private readonly int AnimationMove = Animator.StringToHash("isMoving");
+
     [SerializeField] private Transform[] _movePoints;
     [SerializeField] private float _speedMove = 2f;
-    [SerializeField] private Animator _animator;
     [SerializeField] private float _waitTime = 1.5f;
 
+    private Animator _animator;
     private bool _isMoving = false;
     private int _pointIndex = 0;
 
@@ -23,11 +27,12 @@ public class EnemyPatrolMover : MonoBehaviour
         while (true)
         {
             Vector2 targetPosition = _movePoints[_pointIndex].position;
+            WaitForSeconds waitForSeconds = new WaitForSeconds(_waitTime);
 
             RotateTowardTarget(_movePoints[_pointIndex]);
 
             _isMoving = true;
-            _animator.SetBool("isMoving", _isMoving);
+            _animator.SetBool(AnimationMove, _isMoving);
 
             while ((Vector2)transform.position != targetPosition)
             {
@@ -38,19 +43,18 @@ public class EnemyPatrolMover : MonoBehaviour
             }
 
             _isMoving = false;
-            _animator.SetBool("isMoving", _isMoving);
+            _animator.SetBool(AnimationMove, _isMoving);
 
-            yield return new WaitForSeconds(_waitTime);
+            yield return waitForSeconds;
 
-            _pointIndex = (_pointIndex + 1) % _movePoints.Length;
+            _pointIndex = ++_pointIndex % _movePoints.Length;
         }
     }
 
     private void RotateTowardTarget(Transform target)
     {
-        Vector3 direction = (transform.position - target.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
-        transform.rotation = rotation;
+        Vector2 enemyPosition = transform.position;
+        Vector2 targetPosition = target.position;
+        transform.rotation = targetPosition.x < enemyPosition.x ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 180f, 0f);
     }
 }
