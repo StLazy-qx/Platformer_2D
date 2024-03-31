@@ -3,13 +3,13 @@ using UnityEngine.Events;
 
 public class CharacterGlobalCollisionHandler : MonoBehaviour
 {
-    public event UnityAction<Coin> OnCoinCollisionEnter;
+    public event UnityAction<Coin> CoinCollisionEnter;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.TryGetComponent(out Coin coin))
         {
-            OnCoinCollisionEnter?.Invoke(coin);
+            CoinCollisionEnter?.Invoke(coin);
         }
     }
 }

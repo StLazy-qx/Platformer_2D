@@ -9,13 +9,11 @@ public class Player : MonoBehaviour
     private CharacterGlobalCollisionHandler _collisionHandler;
     private Wallet _wallet;
 
-    public Transform CurrentPosition => transform;
-
     private void Start()
     {
         _collisionHandler = GetComponent<CharacterGlobalCollisionHandler>();
         _wallet = GetComponent<Wallet>();
-        _collisionHandler.OnCoinCollisionEnter += CoinCollisionHandler;
+        _collisionHandler.CoinCollisionEnter += CoinCollisionHandler;
     }
 
     public void CoinCollisionHandler(Coin coin)

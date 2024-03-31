@@ -19,10 +19,10 @@ public class EnemyPatrolMover : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
 
-        StartCoroutine(MoveToNextPoint());
+        StartCoroutine(FollowPath());
     }
 
-    private IEnumerator MoveToNextPoint()
+    private IEnumerator FollowPath()
     {
         while (true)
         {
