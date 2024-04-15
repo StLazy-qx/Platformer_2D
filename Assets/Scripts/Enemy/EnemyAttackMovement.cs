@@ -17,6 +17,7 @@ public class EnemyAttackMovement : MonoBehaviour
     private float _delay = 2;
     private Animator _animator;
     private EnemyMovement _mover;
+    private RaycastHit2D[] _hits;
 
     private void Start()
     {
@@ -34,11 +35,10 @@ public class EnemyAttackMovement : MonoBehaviour
 
     private bool CanFindPlayer()
     {
-
         Vector2 direction = transform.rotation.y < 0 ? Vector2.right : Vector2.left;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(_checkPoint.position, direction, _distanceFindPlayer);
+        _hits = Physics2D.RaycastAll(_checkPoint.position, direction, _distanceFindPlayer);
 
-        foreach (var hit in hits)
+        foreach (var hit in _hits)
         {
             if (hit.collider.TryGetComponent(out Player player))
             {
@@ -78,10 +78,7 @@ public class EnemyAttackMovement : MonoBehaviour
             _animator.SetTrigger(AnimationAttack);
             _lastTimeAttack = _delay;
 
-            Vector2 attackDirection = transform.rotation.y < 0 ? Vector2.right : Vector2.left;
-            RaycastHit2D[] hits = Physics2D.RaycastAll(_checkPoint.position, attackDirection, _distanceAttack);
-
-            foreach (RaycastHit2D hit in hits)
+            foreach (RaycastHit2D hit in _hits)
             {
                 if (hit.collider.TryGetComponent(out Player player))
                 {
