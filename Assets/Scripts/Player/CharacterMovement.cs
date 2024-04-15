@@ -3,17 +3,15 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 
-public class PlayerMover : MonoBehaviour
+public class CharacterMovement : MonoBehaviour
 {
     private readonly string Ground = "Ground";
     private readonly string Horizontal = "Horizontal";
     private readonly int AnimationMove = Animator.StringToHash("Move");
-    private readonly int AnimationAttack = Animator.StringToHash("Attack");
 
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private float _speedMove = 7f;
     [SerializeField] private Transform _groundCheckPoint;
-    [SerializeField] private int _damage = 2;
 
     private float _groundCheckRadius = 0.2f;
     private bool _isGrounded;
@@ -40,7 +38,6 @@ public class PlayerMover : MonoBehaviour
                 Jump();
 
             Move(moveInput);
-            Attack();
             Flip(moveDirection);
         }
     }
@@ -62,14 +59,6 @@ public class PlayerMover : MonoBehaviour
         if (value != 0)
         {
             transform.rotation = value > 0 ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
-        }
-    }
-
-    private void Attack()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            _animator.SetTrigger(AnimationAttack);
         }
     }
 }

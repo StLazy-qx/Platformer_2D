@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterGlobalCollisionHandler))]
 [RequireComponent(typeof(Wallet))]
 

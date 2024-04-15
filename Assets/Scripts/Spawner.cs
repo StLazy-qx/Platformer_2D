@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-public class CoinSpawner : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     [SerializeField] private Transform _spawnPointsParent;
-    [SerializeField] private Coin _template;
+    [SerializeField] private Transform _template;
     [SerializeField] private Transform _container;
 
     private Transform[] _points;
@@ -26,8 +26,8 @@ public class CoinSpawner : MonoBehaviour
     {
         for (int i = 0; i < _points.Length; i++)
         {
-            Coin coin = Instantiate(_template, _container.transform);
-            coin.transform.position = _points[i].position;
+            var template = Instantiate(_template, _container.transform);
+            template.transform.position = _points[i].position;
         }
 
         yield break;

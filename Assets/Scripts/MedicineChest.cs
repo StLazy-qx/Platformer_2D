@@ -1,10 +1,8 @@
 using UnityEngine;
 
-public class Coin : MonoBehaviour
+public class MedicineChest : MonoBehaviour
 {
-    [SerializeField] private int _reward = 1;
-
-    public int Reward => _reward;
+    [SerializeField] private int _heal = 2;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
