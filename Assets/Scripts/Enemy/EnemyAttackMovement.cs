@@ -8,9 +8,9 @@ public class EnemyAttackMovement : MonoBehaviour
     private readonly int AnimationAttack = Animator.StringToHash("Attack");
 
     [SerializeField] private float _distanceFindPlayer = 3f;
-    [SerializeField] private float _distanceAttack = 1.2f;
+    [SerializeField] private float _distanceAttack = 1.5f;
     [SerializeField] private Transform _checkPoint;
-    [SerializeField] private int _attackDamage = 1;
+    [SerializeField] private int _attackDamage = 30;
 
     private Player _player;
     private float _lastTimeAttack = 0;
@@ -84,7 +84,7 @@ public class EnemyAttackMovement : MonoBehaviour
                 {
                     if (player != null)
                     {
-                        PersonHealthSystem healthBehaviour = player.GetComponent<PersonHealthSystem>();
+                        Health healthBehaviour = player.GetComponent<Health>();
 
                         healthBehaviour.TakeDamage(_attackDamage);
                     }

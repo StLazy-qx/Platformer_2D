@@ -10,8 +10,8 @@ public class PlayerAttackMovement : MonoBehaviour
 
     private Animator _animator;
     private bool _isAttacking = false;
-    private float _attackRange = 1f;
-    private int _attackDamage = 2;
+    private float _attackRange = 1.5f;
+    private int _attackDamage = 50;
 
     private void Start()
     {
@@ -41,7 +41,7 @@ public class PlayerAttackMovement : MonoBehaviour
             {
                 if (enemy != null)
                 {
-                    PersonHealthSystem healthBehaviour = enemy.GetComponent<PersonHealthSystem>();
+                    Health healthBehaviour = enemy.GetComponent<Health>();
 
                     healthBehaviour.TakeDamage(_attackDamage);
                 }

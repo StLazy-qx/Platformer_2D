@@ -6,8 +6,10 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     private readonly int AnimationMove = Animator.StringToHash("isMoving");
+    private readonly int AnimationDie = Animator.StringToHash("isDie");
 
     [SerializeField] private Transform[] _movePoints;
+    [SerializeField] private Health _health;
     [SerializeField] private float _speedMove;
     [SerializeField] private float _waitTime = 1.5f;
 
@@ -16,16 +18,37 @@ public class EnemyMovement : MonoBehaviour
     private bool _isPatrolling = true;
     private int _pointIndex = 0;
     private Coroutine _patrolCoroutine;
+    private bool _isDead = false;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
+        _health.OnDeath += HandleDeath;
 
         StartPatrol();
     }
 
+    private void OnDestroy()
+    {
+        _health.OnDeath -= HandleDeath;
+    }
+
+    private void HandleDeath()
+    {
+        _isDead = true;
+
+        StopPatrol();
+
+        _animator.SetBool(AnimationMove, false);
+        _animator.SetTrigger(AnimationDie);
+        enabled = false;
+    }
+
     public void SetPatrolling(bool isPatrolling)
     {
+        if (_isDead)
+            return;
+
         _isPatrolling = isPatrolling;
         if (isPatrolling)
             StartPatrol();
@@ -41,6 +64,9 @@ public class EnemyMovement : MonoBehaviour
 
     public void TowardToTarget(Transform target)
     {
+        if (_isDead)
+            return;
+
         _speedMove = 2;
         _animator.SetBool(AnimationMove, true);
         transform.position = Vector2.MoveTowards(transform.position,
@@ -49,6 +75,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void StartPatrol()
     {
+        if (_isDead)
+            return;
+
         if (_patrolCoroutine == null)
             _patrolCoroutine = StartCoroutine(FollowPath());
     }
@@ -95,6 +124,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void RotateTowardTarget(Transform target)
     {
+        if (_isDead)
+            return;
+
         Vector2 enemyPosition = transform.position;
         Vector2 targetPosition = target.position;
         transform.rotation = targetPosition.x < enemyPosition.x ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 180f, 0f);

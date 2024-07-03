@@ -2,23 +2,28 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SmoothHealthBar : HealthbarView
+public class IndividualHealthBar : HealthbarView
 {
-    [SerializeField] private Slider _slider;
+    [SerializeField] private Image _healthbar;
 
     private Coroutine _smoothChangeValue;
 
     private void Start()
     {
-        _slider.value = 1;
+        _healthbar.fillAmount = 1;
+    }
+
+    private void Update()
+    {
+        _healthbar.transform.rotation = Quaternion.identity;
     }
 
     protected override void OnHealthChanged(int value, int maxValue)
     {
-        SetSliderValue(value, maxValue);
+        SetHealthbarValue(value, maxValue);
     }
 
-    private void SetSliderValue(int value, int maxValue)
+    private void SetHealthbarValue(int value, int maxValue)
     {
         if (_smoothChangeValue != null)
         {
@@ -32,18 +37,19 @@ public class SmoothHealthBar : HealthbarView
     {
         float durationSmoth = 1.0f;
         float elapsedTime = 0f;
-        float currentValue = (float)value / maxValue;
-        float distance = Mathf.Abs(currentValue - _slider.value);
+        float startValue = _healthbar.fillAmount;
+
+        float endValue = (float)value / maxValue;
 
         while (elapsedTime < durationSmoth)
         {
             elapsedTime += Time.deltaTime;
-            _slider.value = Mathf.MoveTowards(_slider.value, currentValue, distance * Time.deltaTime);
+            _healthbar.fillAmount = Mathf.Lerp(startValue, endValue, elapsedTime / durationSmoth);
 
             yield return null;
         }
 
-        _slider.value = currentValue;
+        _healthbar.fillAmount = endValue;
         _smoothChangeValue = null;
     }
 }
