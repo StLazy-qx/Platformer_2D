@@ -5,36 +5,36 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    private readonly string Ground = "Ground";
-    private readonly string Horizontal = "Horizontal";
-    private readonly int AnimationMove = Animator.StringToHash("Move");
-
+    [SerializeField] private Transform _groundCheckPoint;
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private float _speedMove = 7f;
-    [SerializeField] private Transform _groundCheckPoint;
 
-    private float _groundCheckRadius = 0.2f;
-    private bool _isGrounded;
-    private Rigidbody2D _rigidbody;
     private Animator _animator;
+    private Rigidbody2D _rigidbody;
     private LayerMask _groundLayer;
+    private float _groundCheckRadius = 0.2f;
+    private readonly int _animationMove = Animator.StringToHash("Move");
+    private readonly string _ground = "Ground";
+    private readonly string _horizontal = "Horizontal";
+    private KeyCode _jumpKey = KeyCode.Space;
+    private bool _isGrounded;
 
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
-        _groundLayer = LayerMask.GetMask(Ground);
+        _groundLayer = LayerMask.GetMask(_ground);
     }
 
     private void Update()
     {
         _isGrounded = Physics2D.OverlapCircle(_groundCheckPoint.position, _groundCheckRadius, _groundLayer);
-        float moveInput = Input.GetAxis(Horizontal);
+        float moveInput = Input.GetAxis(_horizontal);
         float moveDirection = moveInput != 0 ? Mathf.Sign(moveInput) : 0;
 
         if (_isGrounded)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(_jumpKey))
                 Jump();
 
             Move(moveInput);
@@ -51,7 +51,7 @@ public class CharacterMovement : MonoBehaviour
     {
         _rigidbody.velocity = new Vector2(value * _speedMove, _rigidbody.velocity.y);
 
-        _animator.SetFloat(AnimationMove, Mathf.Abs(value));
+        _animator.SetFloat(_animationMove, Mathf.Abs(value));
     }
 
     private void Flip(float value)

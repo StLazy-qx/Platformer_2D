@@ -2,17 +2,17 @@ using UnityEngine;
 
 public abstract class HealthbarView : MonoBehaviour
 {
-    [SerializeField] protected Health Health;
+    [SerializeField] private Health _health;
 
     private void OnEnable()
     {
-        Health.HealthChanged += OnHealthChanged;
+        _health.Changed += OnHealthChanged;
     }
 
     private void OnDisable()
     {
-        Health.HealthChanged -= OnHealthChanged;
+        _health.Changed -= OnHealthChanged;
     }
 
-    protected virtual void OnHealthChanged(int value, int maxValue) { }
+    protected virtual void OnHealthChanged (int value, int maxValue) { }
 }

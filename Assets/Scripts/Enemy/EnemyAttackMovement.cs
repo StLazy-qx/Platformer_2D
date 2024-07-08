@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class EnemyAttackMovement : MonoBehaviour 
 {
-    private readonly int AnimationAttack = Animator.StringToHash("Attack");
-
+    [SerializeField] private Transform _checkPoint;
     [SerializeField] private float _distanceFindPlayer = 3f;
     [SerializeField] private float _distanceAttack = 1.5f;
-    [SerializeField] private Transform _checkPoint;
     [SerializeField] private int _attackDamage = 30;
 
+    private Animator _animator;
     private Player _player;
     private float _lastTimeAttack = 0;
     private float _delay = 2;
-    private Animator _animator;
+    private readonly int _animationAttack = Animator.StringToHash("Attack");
+
     private EnemyMovement _mover;
     private RaycastHit2D[] _hits;
 
@@ -75,7 +75,7 @@ public class EnemyAttackMovement : MonoBehaviour
     {
         if (_lastTimeAttack <= 0)
         {
-            _animator.SetTrigger(AnimationAttack);
+            _animator.SetTrigger(_animationAttack);
             _lastTimeAttack = _delay;
 
             foreach (RaycastHit2D hit in _hits)

@@ -2,11 +2,22 @@ using UnityEngine;
 
 public class MedicineChest : MonoBehaviour
 {
-    [SerializeField] private int _heal = 2;
+    [SerializeField] private int _healValue = 20;
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public int HealValue => _healValue;
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.TryGetComponent(out Player player))
+        if (other.TryGetComponent(out Player player))
+        {
+            Health targetHealth = player.GetComponent<Health>();
+            
+            if (targetHealth != null)
+            {
+                targetHealth.TakeHeal(_healValue);
+            }
+
             Destroy(gameObject);
+        }
     }
 }

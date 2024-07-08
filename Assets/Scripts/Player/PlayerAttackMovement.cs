@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class PlayerAttackMovement : MonoBehaviour
 {
-    private readonly int AnimationAttack = Animator.StringToHash("Attack");
-
     [SerializeField] private Transform _attackPoint;
 
     private Animator _animator;
-    private bool _isAttacking = false;
     private float _attackRange = 1.5f;
     private int _attackDamage = 50;
+    private readonly int _animationAttack = Animator.StringToHash("Attack");
+    private bool _isAttacking = false;
 
     private void Start()
     {
@@ -23,7 +22,8 @@ public class PlayerAttackMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !_isAttacking)
         {
             PerformAttack();
-            _animator.SetTrigger(AnimationAttack);
+
+            _animator.SetTrigger(_animationAttack);
         }
     }
 

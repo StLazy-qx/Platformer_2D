@@ -5,32 +5,34 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    private readonly int AnimationMove = Animator.StringToHash("isMoving");
-    private readonly int AnimationDie = Animator.StringToHash("isDie");
-
     [SerializeField] private Transform[] _movePoints;
     [SerializeField] private Health _health;
     [SerializeField] private float _speedMove;
     [SerializeField] private float _waitTime = 1.5f;
 
     private Animator _animator;
+    private Coroutine _patrolCoroutine;
+    private readonly int _animationMove = Animator.StringToHash("isMoving");
+    private readonly int _animationDie = Animator.StringToHash("isDie");
+    private int _pointIndex = 0;
     private bool _isMoving = false;
     private bool _isPatrolling = true;
-    private int _pointIndex = 0;
-    private Coroutine _patrolCoroutine;
     private bool _isDead = false;
+
+
+
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
-        _health.OnDeath += HandleDeath;
+        _health.Died += HandleDeath;
 
         StartPatrol();
     }
 
     private void OnDestroy()
     {
-        _health.OnDeath -= HandleDeath;
+        _health.Died -= HandleDeath;
     }
 
     private void HandleDeath()
@@ -39,8 +41,8 @@ public class EnemyMovement : MonoBehaviour
 
         StopPatrol();
 
-        _animator.SetBool(AnimationMove, false);
-        _animator.SetTrigger(AnimationDie);
+        _animator.SetBool(_animationMove, false);
+        _animator.SetTrigger(_animationDie);
         enabled = false;
     }
 
@@ -59,7 +61,7 @@ public class EnemyMovement : MonoBehaviour
     public void StopMoving()
     {
         _speedMove = 0;
-        _animator.SetBool(AnimationMove, false);
+        _animator.SetBool(_animationMove, false);
     }
 
     public void TowardToTarget(Transform target)
@@ -68,7 +70,7 @@ public class EnemyMovement : MonoBehaviour
             return;
 
         _speedMove = 2;
-        _animator.SetBool(AnimationMove, true);
+        _animator.SetBool(_animationMove, true);
         transform.position = Vector2.MoveTowards(transform.position,
             target.transform.position, _speedMove * Time.deltaTime);
     }
@@ -103,7 +105,7 @@ public class EnemyMovement : MonoBehaviour
             RotateTowardTarget(_movePoints[_pointIndex]);
 
             _isMoving = true;
-            _animator.SetBool(AnimationMove, _isMoving);
+            _animator.SetBool(_animationMove, _isMoving);
 
             while ((Vector2)transform.position != targetPosition)
             {
@@ -114,7 +116,7 @@ public class EnemyMovement : MonoBehaviour
             }
 
             _isMoving = false;
-            _animator.SetBool(AnimationMove, _isMoving);
+            _animator.SetBool(_animationMove, _isMoving);
 
             yield return waitForSeconds;
 

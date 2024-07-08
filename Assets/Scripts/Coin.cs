@@ -4,11 +4,13 @@ public class Coin : MonoBehaviour
 {
     [SerializeField] private int _reward = 1;
 
-    public int Reward => _reward;
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.TryGetComponent(out Player player))
+        if (other.TryGetComponent(out Wallet wallet))
+        {
+            wallet.AddMoney(_reward);
+
             Destroy(gameObject);
+        }
     }
 }
