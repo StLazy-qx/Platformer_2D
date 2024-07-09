@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IndividualHealthBar : HealthbarView
+public class HealthBar : AbstractHealthBar
 {
     [SerializeField] private Image _healthbar;
 

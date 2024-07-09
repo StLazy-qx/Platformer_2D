@@ -2,13 +2,13 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 
-public class PlayerAttackMovement : MonoBehaviour
+public class PlayerAttackMover : MonoBehaviour
 {
     [SerializeField] private Transform _attackPoint;
 
     private Animator _animator;
     private float _attackRange = 1.5f;
-    private int _attackDamage = 50;
+    private int _attackDamage = 70;
     private readonly int _animationAttack = Animator.StringToHash("Attack");
     private bool _isAttacking = false;
 
@@ -21,9 +21,9 @@ public class PlayerAttackMovement : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !_isAttacking)
         {
-            PerformAttack();
-
             _animator.SetTrigger(_animationAttack);
+
+            PerformAttack();
         }
     }
 

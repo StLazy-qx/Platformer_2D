@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyPatrolMover : MonoBehaviour
 {
     [SerializeField] private Transform[] _movePoints;
     [SerializeField] private Health _health;
@@ -19,8 +19,7 @@ public class EnemyMovement : MonoBehaviour
     private bool _isPatrolling = true;
     private bool _isDead = false;
 
-
-
+    public bool IsDead => _isDead;
 
     private void Start()
     {
@@ -35,23 +34,13 @@ public class EnemyMovement : MonoBehaviour
         _health.Died -= HandleDeath;
     }
 
-    private void HandleDeath()
-    {
-        _isDead = true;
-
-        StopPatrol();
-
-        _animator.SetBool(_animationMove, false);
-        _animator.SetTrigger(_animationDie);
-        enabled = false;
-    }
-
     public void SetPatrolling(bool isPatrolling)
     {
         if (_isDead)
             return;
 
         _isPatrolling = isPatrolling;
+
         if (isPatrolling)
             StartPatrol();
         else
@@ -60,6 +49,9 @@ public class EnemyMovement : MonoBehaviour
 
     public void StopMoving()
     {
+        if (_isDead)
+            return;
+
         _speedMove = 0;
         _animator.SetBool(_animationMove, false);
     }
@@ -75,11 +67,19 @@ public class EnemyMovement : MonoBehaviour
             target.transform.position, _speedMove * Time.deltaTime);
     }
 
+    private void HandleDeath()
+    {
+        _isDead = true;
+
+        StopPatrol();
+        _animator.SetBool(_animationMove, false);
+        _animator.SetTrigger(_animationDie);
+
+        enabled = false;
+    }
+
     private void StartPatrol()
     {
-        if (_isDead)
-            return;
-
         if (_patrolCoroutine == null)
             _patrolCoroutine = StartCoroutine(FollowPath());
     }
@@ -89,6 +89,7 @@ public class EnemyMovement : MonoBehaviour
         if (_patrolCoroutine != null)
         {
             StopCoroutine(_patrolCoroutine);
+
             _patrolCoroutine = null;
         }
     }
@@ -126,9 +127,6 @@ public class EnemyMovement : MonoBehaviour
 
     private void RotateTowardTarget(Transform target)
     {
-        if (_isDead)
-            return;
-
         Vector2 enemyPosition = transform.position;
         Vector2 targetPosition = target.position;
         transform.rotation = targetPosition.x < enemyPosition.x ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 180f, 0f);
