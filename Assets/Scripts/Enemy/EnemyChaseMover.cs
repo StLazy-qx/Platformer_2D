@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyPatrolMover))]
 [RequireComponent(typeof(EnemyAttackMover))]
 
-public class EnemyChase : MonoBehaviour
+public class EnemyChaseMover : MonoBehaviour
 {
     [SerializeField] private Transform _checkPoint;
     [SerializeField] private float _distanceFindPlayer = 3f;
