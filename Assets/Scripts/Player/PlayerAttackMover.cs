@@ -32,6 +32,16 @@ public class PlayerAttackMover : MonoBehaviour
         _isAttacking = true;
         float timeBetweenAttacking = 1f;
 
+        Invoke("ResetAttack", timeBetweenAttacking);
+    }
+
+    private void ResetAttack()
+    {
+        _isAttacking = false;
+    }
+
+    private void DealDamage()
+    {
         Vector2 attackDirection = transform.rotation.y < 0 ? Vector2.right : Vector2.left;
         RaycastHit2D[] hits = Physics2D.RaycastAll(_attackPoint.position, attackDirection, _attackRange);
 
@@ -47,12 +57,5 @@ public class PlayerAttackMover : MonoBehaviour
                 }
             }
         }
-
-        Invoke("ResetAttack", timeBetweenAttacking);
-    }
-
-    private void ResetAttack()
-    {
-        _isAttacking = false;
     }
 }

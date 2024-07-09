@@ -69,13 +69,19 @@ public class EnemyPatrolMover : MonoBehaviour
 
     private void HandleDeath()
     {
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
         _isDead = true;
 
         StopPatrol();
+
         _animator.SetBool(_animationMove, false);
         _animator.SetTrigger(_animationDie);
-
         enabled = false;
+
+        foreach (Collider2D collider in colliders)
+        {
+            collider.enabled = false;
+        }
     }
 
     private void StartPatrol()
