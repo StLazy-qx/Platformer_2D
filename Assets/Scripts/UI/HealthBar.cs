@@ -8,16 +8,6 @@ public class HealthBar : AbstractHealthBar
 
     private Coroutine _smoothChangeValue;
 
-    private void Start()
-    {
-        _healthbar.fillAmount = 1;
-    }
-
-    private void Update()
-    {
-        _healthbar.transform.rotation = Quaternion.identity;
-    }
-
     protected override void OnHealthChanged(int value, int maxValue)
     {
         SetHealthbarValue(value, maxValue);
@@ -35,10 +25,15 @@ public class HealthBar : AbstractHealthBar
 
     private IEnumerator ChangeSliderValue(float value, int maxValue)
     {
+        if (_healthbar == null)
+            yield break;
+
+        if (maxValue == 0)
+            yield break;
+
         float durationSmoth = 1.0f;
         float elapsedTime = 0f;
         float startValue = _healthbar.fillAmount;
-
         float endValue = (float)value / maxValue;
 
         while (elapsedTime < durationSmoth)

@@ -8,7 +8,7 @@ public class PlayerAttackMover : MonoBehaviour
 
     private Animator _animator;
     private float _attackRange = 1.5f;
-    private int _attackDamage = 70;
+    private int _attackDamage = 30;
     private readonly int _animationAttack = Animator.StringToHash("Attack");
     private bool _isAttacking = false;
 
@@ -51,9 +51,9 @@ public class PlayerAttackMover : MonoBehaviour
             {
                 if (enemy != null)
                 {
-                    Health healthBehaviour = enemy.GetComponent<Health>();
+                    Health enemyHealth = enemy.GetComponent<Health>();
 
-                    healthBehaviour.TakeDamage(_attackDamage);
+                    enemyHealth.TakeDamage(_attackDamage);
                 }
             }
         }

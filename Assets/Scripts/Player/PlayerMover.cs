@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 
-public class CharacterMover : MonoBehaviour
+public class PlayerMover : MonoBehaviour
 {
     [SerializeField] private Transform _groundCheckPoint;
     [SerializeField] private float _jumpForce = 5f;
