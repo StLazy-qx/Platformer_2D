@@ -7,17 +7,19 @@ using UnityEngine.Events;
 public class VampireEffect : MonoBehaviour
 {
     [SerializeField] private Transform _vampireCheckPoint;
+    [SerializeField] private float _timeAction = 6f;
 
     private Health _playerHealth;
     private Coroutine _vampireCoroutine;
     private KeyCode _vampireKey = KeyCode.Q;
     private float _radius = 3f;
-    private float _timeAction = 6f;
     private float _damagePerSecond = 5f;
     private bool _isVampirismReady = true;
 
     public event UnityAction UsingVampirism;
     public event UnityAction Cooldowning;
+
+    public float TimeAction => _timeAction;
 
     private void Start()
     {
@@ -26,24 +28,63 @@ public class VampireEffect : MonoBehaviour
 
     private void Update()
     {
-        if (_isVampirismReady)
+        if (_isVampirismReady && Input.GetKeyDown(_vampireKey))
         {
-            if (Input.GetKeyDown(_vampireKey))
-            {
-                UsingVampirism?.Invoke();
-                _isVampirismReady = false;
+            _isVampirismReady = false;
 
-                DefineEnemy();
-            }
+            UsingVampirism?.Invoke();
+            IncludeVampirism();
         }
     }
 
-    public void SetVampirismReady(bool isReady)
+    public void EnableVampirism()
     {
-        _isVampirismReady = isReady;
+        _isVampirismReady = true;
     }
 
-    private void DefineEnemy()
+    private void IncludeVampirism()
+    {
+        if (_vampireCoroutine != null)
+        {
+            StopCoroutine(_vampireCoroutine);
+        }
+
+        _vampireCoroutine = StartCoroutine(PerformVampirism());
+    }
+
+    private IEnumerator PerformVampirism()
+    {
+        float healthAccumulated = 0f;
+        int iterations = Mathf.CeilToInt(_timeAction / Time.deltaTime);
+
+        for (int i = 0; i < iterations; i++)
+        {
+            healthAccumulated += _damagePerSecond * Time.deltaTime;
+
+            Enemy nearestEnemy = GetNearestEnemy();
+
+            if (nearestEnemy != null)
+            {
+                Health enemyHealth = nearestEnemy.GetComponent<Health>();
+                if (healthAccumulated >= 1f)
+                {
+                    int healthToTransfer = Mathf.FloorToInt(healthAccumulated);
+                    healthAccumulated -= healthToTransfer;
+
+                    enemyHealth.TakeDamage(healthToTransfer);
+                    _playerHealth.TakeHeal(healthToTransfer);
+                }
+            }
+
+            yield return null;
+        }
+
+        Cooldowning?.Invoke();
+
+        _vampireCoroutine = null;
+    }
+
+    private Enemy GetNearestEnemy()
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(_vampireCheckPoint.position, _radius);
         Enemy nearestEnemy = null;
@@ -63,45 +104,6 @@ public class VampireEffect : MonoBehaviour
             }
         }
 
-        if (nearestEnemy != null)
-        {
-            if (_vampireCoroutine != null)
-            {
-                StopCoroutine(_vampireCoroutine);
-            }
-
-            _vampireCoroutine = StartCoroutine(PerformVampirism(nearestEnemy));
-        }
-    }
-
-    private IEnumerator PerformVampirism(Enemy enemy)
-    {
-        float elapsedTime = 0f;
-        float healthAccumulated = 0f;
-
-        while (elapsedTime < _timeAction)
-        {
-            elapsedTime += Time.deltaTime;
-            healthAccumulated += _damagePerSecond * Time.deltaTime;
-
-            if (enemy != null)
-            {
-                Health enemyHealth = enemy.GetComponent<Health>();
-
-                if (healthAccumulated >= 1f)
-                {
-                    int healthToTransfer = Mathf.FloorToInt(healthAccumulated);
-                    healthAccumulated -= healthToTransfer;
-
-                    enemyHealth.TakeDamage(healthToTransfer);
-                    _playerHealth.TakeHeal(healthToTransfer);
-                }
-            }
-
-            yield return null;
-        }
-
-        Cooldowning?.Invoke();
-        _vampireCoroutine = null;
+        return nearestEnemy;
     }
 }

@@ -7,7 +7,6 @@ public class VisualVampireEffect : MonoBehaviour
     [SerializeField] private VampireEffect _targetEffect;
     [SerializeField] private SpriteRenderer _spriteEffect;
 
-    private float _timeAction = 6f;
     private Coroutine _changedAlphaChannel;
 
     private void Start()
@@ -45,11 +44,11 @@ public class VisualVampireEffect : MonoBehaviour
         initialColor.a = 1f;
         _spriteEffect.color = initialColor;
 
-        while (elapsedTime < _timeAction)
+        while (elapsedTime < _targetEffect.TimeAction)
         {
             elapsedTime += Time.deltaTime;
             Color newColor = _spriteEffect.color;
-            newColor.a = Mathf.Lerp(1f, 0f, elapsedTime / _timeAction);
+            newColor.a = Mathf.Lerp(1f, 0f, elapsedTime / _targetEffect.TimeAction);
             _spriteEffect.color = newColor;
 
             yield return null;

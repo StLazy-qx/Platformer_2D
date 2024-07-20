@@ -7,8 +7,6 @@ public class CooldownVampireEffect : MonoBehaviour
     [SerializeField] private VampireEffect _targetEffect;
     [SerializeField] private TextMeshProUGUI _textTimeCooldown;
 
-    private float _beginValue = 6f;
-
     private void Start()
     {
         _textTimeCooldown.text = "Vampirism Ready";
@@ -35,7 +33,7 @@ public class CooldownVampireEffect : MonoBehaviour
     private IEnumerator BeginCountdown()
     {
         WaitForSeconds waitForSeconds = new WaitForSeconds(1f);
-        float remainingTime = _beginValue;
+        float remainingTime = _targetEffect.TimeAction;
 
         while (remainingTime > 0)
         {
@@ -46,7 +44,8 @@ public class CooldownVampireEffect : MonoBehaviour
             remainingTime --;
         }
 
-        _targetEffect.SetVampirismReady(true);
+        _targetEffect.EnableVampirism();
+
         _textTimeCooldown.text = "Vampirism Ready";
     }
 }
