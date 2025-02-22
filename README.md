@@ -9,6 +9,8 @@ Features:
 Combat mechanics:
 - Both the player and the enemy can damage each other
 - Enemy chases the player when spotted, otherwise continues patrolling
+- The animation of the strike is done by a particle system
+- The animation of the weapon movement (the player's sword) is also done by a particle system
 
 Health system:
 - Healing through medkits scattered around the level
